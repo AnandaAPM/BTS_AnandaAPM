@@ -18,32 +18,82 @@ class Checklist extends StatefulWidget {
 
 class _ChecklistState extends State<Checklist> {
   // var tkn = int.parse(token);
+  var x;
+
   Future getChecklistAPI() async {
     final response = await http.get(
-        Uri.parse("${url}checklist"),
-        headers: ({
-          'Content-Type': 'application/json',
-          'Accept': 'application/json',
-          'Authorization': 'Bearer ${token}',
-        }),
+      Uri.parse("${url}checklist"),
+      headers: ({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${token}',
+      }),
     );
     var data = jsonDecode(response.body);
-    print(data);
+    print(data['data']);
+    setState(() {
+      x = data['data'];
+
+    });
 
   }
+  Future createChecklistAPI(String name) async {
+    final response = await http.post(
+      Uri.parse("${url}checklist"),
+      headers: ({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ${token}',
+      }),
+      body: jsonEncode({
+        "name" : name,
+      })
+    );
+    var data = jsonDecode(response.body);
+    print(data['data']);
+    setState(() {
+      x = data['data'];
+
+    });
+
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(body: SingleChildScrollView(
+    return Scaffold(
+        body: SingleChildScrollView(
       child: Column(
         children: [
           Container(
-            color:Colors.green,
+            color: Colors.green,
             child: MaterialButton(
-            onPressed: (){
+              onPressed: () {
 
-            },
-            child: Text("Tambah Checklist"),
-          ),)
+              },
+              child: Text("Tambah Checklist"),
+            ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height*0.7,
+              child: ListView.builder(
+                itemCount: x.length,
+                shrinkWrap: true,
+            itemBuilder: (context, index) => Card(
+              child:  Container(
+                height: 100,
+                width: 400,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(x[index]['name']),
+                  ],
+                ),
+              ),
+            ),
+          ))
         ],
       ),
     ));
