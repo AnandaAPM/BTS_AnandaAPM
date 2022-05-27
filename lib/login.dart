@@ -33,9 +33,11 @@ class _LoginState extends State<Login> {
       );
 
       var data = jsonDecode(response.body);
-      if(data['data']['token'].isNotEmpty) {
-        token = data['data']['token'];
-      }
+      token = data['data']['token'];
+      print(data);
+
+
+
       if(data['statusCode'] == 2110) {
         Navigator.push(context, MaterialPageRoute(builder: (context)=>Checklist()));
       }
